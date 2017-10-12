@@ -34,6 +34,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "map.h"
 #include "util/string.h"
 #include "nodedef.h"
+#include "network/networkpacket.h"
 
 int ModApiClient::l_get_current_modname(lua_State *L)
 {
@@ -348,6 +349,22 @@ int ModApiClient::l_get_builtin_path(lua_State *L)
 	return 1;
 }
 
+// send_packet(string)
+int ModApiClient::l_send_packet(lua_State *L)
+{
+	NO_MAP_LOCK_REQUIRED;
+	Client *client = getClient(L);
+	if (lua_isstring(L, 1)) {
+		NetworkPacket pkt;
+		const char *s = lua_tostring(L, 1);
+		size_t l = lua_strlen(L, 1);
+		pkt.putRawPacket((u8*)s, (u32)l, 0);
+		client->Send(&pkt);
+		return 1;
+	}
+	return 0;
+}
+
 void ModApiClient::Initialize(lua_State *L, int top)
 {
 	API_FCT(get_current_modname);
@@ -373,4 +390,5 @@ void ModApiClient::Initialize(lua_State *L, int top)
 	API_FCT(take_screenshot);
 	API_FCT(get_privilege_list);
 	API_FCT(get_builtin_path);
+	API_FCT(send_packet);
 }

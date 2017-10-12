@@ -94,6 +94,9 @@ private:
 	// get_builtin_path()
 	static int l_get_builtin_path(lua_State *L);
 
+	// send_packet(packet)
+	static int l_send_packet(lua_State *L);
+
 public:
 	static void Initialize(lua_State *L, int top);
 };
